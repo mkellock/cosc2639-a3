@@ -1,0 +1,440 @@
+AWSTemplateFormatVersion: 2010-09-09
+Metadata:
+    'AWS::CloudFormation::Designer':
+        b10d355d-a7cc-4030-9933-b3f778b141b8:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 60
+                'y': 60
+            z: 1
+            embeds: []
+            isassociatedwith:
+                - dee40bc1-99c7-4428-9c1b-c70b5f168928
+        5ce2e9f4-2020-4f95-a215-1c1695298eda:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 150
+                'y': 60
+            z: 1
+            embeds: []
+        fd701881-7e7b-4b94-a1a5-1915c3d11394:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 60
+                'y': 180
+            z: 1
+            embeds: []
+        91b85c7b-55a4-4935-9867-edcb48ea69a4:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 270
+                'y': 300
+            z: 1
+            embeds: []
+        30f02d01-48f8-4aec-81c9-a7f7ca31fe2b:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 410
+                'y': 190
+            z: 1
+            embeds: []
+        6c7386ab-368f-42c2-8cf7-e94778b5f82d:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 900
+                'y': 60
+            z: 1
+            embeds: []
+            dependson:
+                - 428f9ed6-c371-4fcb-af50-663ac6c6fe4c
+        0a30a85e-4995-484a-b7a1-1db0435af8a0:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 900
+                'y': 60
+            z: 1
+            embeds: []
+        52748248-3206-4f2a-a36c-6e94a3885a43:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 900
+                'y': 300
+            z: 1
+            embeds: []
+        3f608bb1-a52e-4748-876e-7c523d1d6cfa:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 900
+                'y': 180
+            z: 1
+            embeds: []
+            isassociatedwith:
+                - 6c7386ab-368f-42c2-8cf7-e94778b5f82d
+        d09d177c-0253-4153-9288-5d37951649ba:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 280
+                'y': 60
+            z: 0
+            embeds: []
+        428f9ed6-c371-4fcb-af50-663ac6c6fe4c:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 460
+                'y': -10
+            z: 1
+            embeds: []
+            isassociatedwith:
+                - d09d177c-0253-4153-9288-5d37951649ba
+        41b0f9a1-f3f0-47a2-9c7d-71f0b2ac1706:
+            size:
+                width: 60
+                height: 60
+            position:
+                x: 50
+                'y': 300
+            z: 0
+            embeds: []
+            isassociatedwith:
+                - 2ee33c8c-f7df-4ff2-9f8e-00fff0496410
+Parameters:
+    DBUsername:
+        Description: Username for MySQL database access
+        Type: String
+        MinLength: '1'
+        MaxLength: '16'
+        AllowedPattern: '[a-zA-Z][a-zA-Z0-9]*'
+        Default: admin
+        ConstraintDescription: must begin with a letter and contain only alphanumeric characters.
+    DBPassword:
+        Description: Password MySQL database access
+        Type: String
+        MinLength: '8'
+        MaxLength: '41'
+        ConstraintDescription: must contain only alphanumeric characters.
+    DBName:
+        Description: Database to run on MySQL
+        Type: String
+        MinLength: '8'
+        MaxLength: '41'
+        Default: cosc26393
+        ConstraintDescription: must contain only alphanumeric characters.
+Resources:
+    cosc26393ProcessVideoRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+            AssumeRolePolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                    - Effect: Allow
+                      Principal:
+                          Service: lambda.amazonaws.com
+                      Action: 'sts:AssumeRole'
+            Policies:
+                - PolicyName: ECSIAMPassRole2
+                  PolicyDocument:
+                      Version: 2012-10-17
+                      Statement:
+                          - Sid: VisualEditor0
+                            Effect: Allow
+                            Action: 'iam:PassRole'
+                            Resource: !GetAtt
+                                - ECSS3FullAccess
+                                - Arn
+                - PolicyName: ECSIAMPassRole
+                  PolicyDocument:
+                      Version: 2012-10-17
+                      Statement:
+                          - Sid: VisualEditor0
+                            Effect: Allow
+                            Action: 'iam:PassRole'
+                            Resource: !GetAtt
+                                - ECSTaskExecutionRole
+                                - Arn
+                - PolicyName: ECSRunTask
+                  PolicyDocument:
+                      Version: 2012-10-17
+                      Statement:
+                          - Sid: VisualEditor0
+                            Effect: Allow
+                            Action: 'ecs:RunTask'
+                            Resource: '*'
+            ManagedPolicyArns:
+                - 'arn:aws:iam::aws:policy/CloudWatchFullAccess'
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: b10d355d-a7cc-4030-9933-b3f778b141b8
+        DeletionPolicy: Delete
+    ECSS3FullAccess:
+        Type: 'AWS::IAM::Role'
+        Properties:
+            AssumeRolePolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                    - Sid: ''
+                      Effect: Allow
+                      Principal:
+                          Service: ecs-tasks.amazonaws.com
+                      Action: 'sts:AssumeRole'
+            ManagedPolicyArns:
+                - 'arn:aws:iam::aws:policy/AmazonS3FullAccess'
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: fd701881-7e7b-4b94-a1a5-1915c3d11394
+        DeletionPolicy: Delete
+    ECSTaskExecutionRole:
+        Type: 'AWS::IAM::Role'
+        Properties:
+            AssumeRolePolicyDocument:
+                Version: 2008-10-17
+                Statement:
+                    - Sid: ''
+                      Effect: Allow
+                      Principal:
+                          Service: ecs-tasks.amazonaws.com
+                      Action: 'sts:AssumeRole'
+            ManagedPolicyArns:
+                - 'arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy'
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: 5ce2e9f4-2020-4f95-a215-1c1695298eda
+        DeletionPolicy: Delete
+    ProcessVideo:
+        Type: 'AWS::ECS::TaskDefinition'
+        Properties:
+            Cpu: 4096
+            Memory: 8192
+            NetworkMode: awsvpc
+            ExecutionRoleArn: !GetAtt
+                - ECSTaskExecutionRole
+                - Arn
+            TaskRoleArn: !GetAtt
+                - ECSS3FullAccess
+                - Arn
+            RuntimePlatform:
+                CpuArchitecture: ARM64
+                OperatingSystemFamily: LINUX
+            RequiresCompatibilities:
+                - FARGATE
+            ContainerDefinitions:
+                - Name: cosc2631-3
+                  Image: 'mkellock/cosc2631-3:latest'
+                  Essential: true
+                  StartTimeout: 120
+                  StopTimeout: 120
+                  Environment:
+                      - Name: DATABASE_USER
+                        Value: !Ref DBUsername
+                      - Name: DATABASE_PASSWORD
+                        Value: !Ref DBPassword
+                      - Name: DATABASE_SERVER
+                        Value: !GetAtt
+                            - RDSInstance
+                            - Endpoint.Address
+                      - Name: DATABASE_NAME
+                        Value: !Ref DBName
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: 91b85c7b-55a4-4935-9867-edcb48ea69a4
+    Cosc26313Cluster:
+        Type: 'AWS::ECS::Cluster'
+        Properties:
+            CapacityProviders:
+                - FARGATE_SPOT
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: 30f02d01-48f8-4aec-81c9-a7f7ca31fe2b
+    Cosc23313Bucket:
+        Type: 'AWS::S3::Bucket'
+        Properties:
+            AccessControl: Private
+            NotificationConfiguration:
+                LambdaConfigurations:
+                    - Event: 's3:ObjectCreated:*'
+                      Function: !GetAtt
+                          - cosc26393ProcessVideo
+                          - Arn
+                      Filter:
+                          S3Key:
+                              Rules:
+                                  - Name: prefix
+                                    Value: uploads/
+        DependsOn:
+            - cosc26393ProcessVideoLP
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: 6c7386ab-368f-42c2-8cf7-e94778b5f82d
+    Cosc26313CF:
+        Type: 'AWS::CloudFront::Distribution'
+        Properties:
+            DistributionConfig:
+                Origins:
+                    - DomainName: !GetAtt
+                          - Cosc23313Bucket
+                          - DomainName
+                      Id: Cosc23313Bucket
+                      S3OriginConfig:
+                          OriginAccessIdentity: !Sub 'origin-access-identity/cloudfront/${Cosc23313CFOAI}'
+                Enabled: 'true'
+                DefaultCacheBehavior:
+                    AllowedMethods:
+                        - GET
+                        - HEAD
+                    TargetOriginId: Cosc23313Bucket
+                    ForwardedValues:
+                        QueryString: 'false'
+                        Cookies:
+                            Forward: none
+                    ViewerProtocolPolicy: redirect-to-https
+                ViewerCertificate:
+                    CloudFrontDefaultCertificate: 'true'
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: 0a30a85e-4995-484a-b7a1-1db0435af8a0
+    Cosc23313CFOAI:
+        Type: 'AWS::CloudFront::CloudFrontOriginAccessIdentity'
+        Properties:
+            CloudFrontOriginAccessIdentityConfig:
+                Comment: CFOAI
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: 52748248-3206-4f2a-a36c-6e94a3885a43
+    Cosc23313BP:
+        Type: 'AWS::S3::BucketPolicy'
+        Properties:
+            Bucket: !Ref Cosc23313Bucket
+            PolicyDocument:
+                Version: 2008-10-17
+                Id: PolicyForCloudFrontPrivateContent
+                Statement:
+                    - Sid: '1'
+                      Effect: Allow
+                      Principal:
+                          AWS: !Sub
+                              - >-
+                                  arn:aws:iam::cloudfront:user/CloudFront Origin Access Identity
+                                  ${Cosc23313CFOAI}
+                              - Cosc23313CFOAI: !Ref Cosc23313CFOAI
+                      Action: 's3:GetObject'
+                      Resource: !Sub 'arn:aws:s3:::${Cosc23313Bucket}/*'
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: 3f608bb1-a52e-4748-876e-7c523d1d6cfa
+    cosc26393ProcessVideo:
+        Type: 'AWS::Lambda::Function'
+        Properties:
+            Environment:
+                Variables:
+                    CLUSTER: !Ref Cosc26313Cluster
+                    TASK: !Ref ProcessVideo
+                    REGION: !Ref 'AWS::Region'
+            Role: !GetAtt
+                - cosc26393ProcessVideoRole
+                - Arn
+            Runtime: python3.9
+            Handler: index.lambda_handler
+            Architectures:
+                - arm64
+            Code:
+                ZipFile: |
+                    import json
+                    import os
+                    import urllib.parse
+                    import boto3
+
+                    client = boto3.client("ecs", region_name=os.environ.get('REGION'))
+
+                    def lambda_handler(event, context):
+                        # Get the object from the event and show its content type
+                        bucket = event['Records'][0]['s3']['bucket']['name']
+                        key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+
+                        inputFile = 's3://' + os.path.join(bucket, key);
+                        outputFile = 's3://' + os.path.join(bucket, "compressed", os.path.basename(key));
+                        id = os.path.splitext(os.path.basename(key))[0];
+
+                        response = client.run_task(
+                            taskDefinition=os.environ.get('TASK'),
+                            launchType='FARGATE',
+                            cluster=os.environ.get('CLUSTER'),
+                            platformVersion='LATEST',
+                            count=1,
+                            networkConfiguration={
+                                'awsvpcConfiguration': {
+                                    'subnets': [
+                                        'subnet-bf1d59f6',
+                                        'subnet-eea5ee89',
+                                        'subnet-10fe3c48'
+                                    ],
+                                    'assignPublicIp': 'ENABLED'
+                                }
+                            },
+                            overrides={
+                                'containerOverrides': [
+                                    {
+                                        'name': 'cosc2631-3',
+                                        'environment': [
+                                            {
+                                                'name': "FROM_S3_FILE",
+                                                'value': inputFile
+                                            },
+                                            {
+                                                'name': "TO_S3_FILE",
+                                                'value': outputFile
+                                            },
+                                            {
+                                                'name': "ID",
+                                                'value': id
+                                            },
+                                        ]
+                                    }
+                                ]
+                            }
+                        )
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: d09d177c-0253-4153-9288-5d37951649ba
+    cosc26393ProcessVideoLP:
+        Type: 'AWS::Lambda::Permission'
+        Properties:
+            FunctionName: !Ref cosc26393ProcessVideo
+            Action: 'lambda:InvokeFunction'
+            Principal: s3.amazonaws.com
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: 428f9ed6-c371-4fcb-af50-663ac6c6fe4c
+    RDSInstance:
+        Type: 'AWS::RDS::DBInstance'
+        Properties:
+            MasterUsername: !Ref DBUsername
+            MasterUserPassword: !Ref DBPassword
+            DBInstanceIdentifier: cosc26393
+            Engine: MySQL
+            EngineVersion: 8.0.28
+            AllocatedStorage: 50
+            DBInstanceClass: db.t4g.micro
+        Metadata:
+            'AWS::CloudFormation::Designer':
+                id: 41b0f9a1-f3f0-47a2-9c7d-71f0b2ac1706

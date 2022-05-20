@@ -20,7 +20,7 @@ export default class Video extends React.Component<InputProps> {
     };
 
     render(): React.ReactNode {
-        let imageUrl: string = 'https://cosc26313.kellock.com.au/compressed/' + this.props.id + '.mp4';
+        let imageUrl: string = '/compressed/' + this.props.id + '.mp4';
 
         return (
             <Center
